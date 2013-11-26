@@ -29,8 +29,12 @@ class Mirantis(Process):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-            with open("test.txt", "a") as myfile:
-                myfile.write(str(te - ts) + '\n')
+            if method.__name__ == "create_instance":
+                with open("create.txt", "a") as myfile:
+                    myfile.write(str(te - ts) + '\n')
+            elif method.__name__ == "delete_instance":
+                with open("delete.txt", "a") as myfile:
+                    myfile.write(str(te - ts) + '\n')
             return result
 
         return timed
