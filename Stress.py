@@ -24,6 +24,7 @@ class Mirantis(Process):
         self.cinder = cindercl.Client('1', user, password,
                                       tenant, keystone_url)
         self.numb = numb
+        self.points = []
 
     def timecheck(method):
 
@@ -31,7 +32,6 @@ class Mirantis(Process):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-
             print te - ts
             return result
 
@@ -57,7 +57,7 @@ class Mirantis(Process):
         status = instance.status
         while status == 'BUILD':
             time.sleep(5)
-            instance = nova.servers.get(instance.id)
+            instance = self.nova.servers.get(instance.id)
             status = instance.status
         return instance.name
 
