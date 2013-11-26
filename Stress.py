@@ -10,15 +10,12 @@ tenant = 'ForTests'
 keystone_url = 'http://172.18.124.201:5000/v2.0/'
 
 
-
-
 class Mirantis(Process):
 
     def __init__(self, numb):
         super(Mirantis, self).__init__()
-        keystone_client = ksclient.Client(username=user, password=password,
-                                          tenant_name=tenant,
-                                          auth_url=keystone_url)
+        ksclient.Client(username=user, password=password,
+                        tenant_name=tenant, auth_url=keystone_url)
         self.nova = nvclient.Client(user, password, tenant, keystone_url,
                                     service_type="compute")
         self.cinder = cindercl.Client('1', user, password,
@@ -32,7 +29,8 @@ class Mirantis(Process):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-            print te - ts
+            with open("test.txt", "a") as myfile:
+                myfile.write(str(te - ts) + '\n')
             return result
 
         return timed
@@ -56,7 +54,6 @@ class Mirantis(Process):
                                             image=image, flavor=flavor)
         status = instance.status
         while status == 'BUILD':
-            time.sleep(5)
             instance = self.nova.servers.get(instance.id)
             status = instance.status
         return instance.name
@@ -65,6 +62,9 @@ class Mirantis(Process):
     def delete_instance(self, name):
         server = self.nova.servers.find(name=name)
         server.delete()
+        server = self.nova.servers.find(name=name)
+        while server.status == 'ACTIVE':
+            server = self.nova.servers.find(name=name)
 
     def run(self):
         instance = self.create_instance()
