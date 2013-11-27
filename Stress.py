@@ -3,16 +3,21 @@ from multiprocessing import Process
 from cinderclient import client as cindercl
 import novaclient.v1_1.client as nvclient
 import time
+import random
+import ConfigParser
 
-user = 'sergey_demo_user'
-password = '111'
-tenant = 'ForTests'
-keystone_url = 'http://172.18.124.201:5000/v2.0/'
-
+"""
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
+user = config.get('keystone', 'user')
+password = config.get('keystone', 'password')
+tenant = config.get('keystone', 'tenant')
+keystone_url = config.get('keystone', 'url')
+"""
 
 class Mirantis(Process):
 
-    def __init__(self, numb):
+    def __init__(self, numb, user, password, tenant, keystone_url):
         super(Mirantis, self).__init__()
         ksclient.Client(username=user, password=password,
                         tenant_name=tenant, auth_url=keystone_url)
@@ -29,12 +34,8 @@ class Mirantis(Process):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-            if method.__name__ == "create_instance":
-                with open("create.txt", "a") as myfile:
-                    myfile.write(str(te - ts) + '\n')
-            elif method.__name__ == "delete_instance":
-                with open("delete.txt", "a") as myfile:
-                    myfile.write(str(te - ts) + '\n')
+            with open('testresults.txt', "a") as myfile:
+                myfile.write(str(te - ts) + "  " + method.__name__ + '\n')
             return result
 
         return timed
@@ -70,18 +71,15 @@ class Mirantis(Process):
         while server.status == 'ACTIVE':
             server = self.nova.servers.find(name=name)
 
+    @timecheck
+    def get_servers_list(self):
+        servers = self.nova.servers.list()
+        return servers
+
     def run(self):
-        instance = self.create_instance()
-        self.delete_instance(instance)
-
-
-procs = []
-for i in xrange(2):
-    p = Mirantis(i)
-    procs.append(p)
-
-for m in procs:
-    m.start()
-
-for j in procs:
-    j.join()
+        k = random.randint(51, 100)
+        if k < 50:
+            instance = self.create_instance()
+            self.delete_instance(instance)
+        elif k < 100:
+            self.get_servers_list()
