@@ -41,7 +41,7 @@ for j in numb:
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
 #pl.plot(numb, ki)
-pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white')
+pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
 pl.title('Get instance list action')
 pl.xlabel('Users')
 pl.ylabel('Time')
