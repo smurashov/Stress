@@ -4,6 +4,7 @@ from cinderclient import client as cindercl
 import novaclient.v1_1.client as nvclient
 import time
 import random
+import os
 
 
 class Mirantis(Process):
@@ -25,7 +26,7 @@ class Mirantis(Process):
             ts = time.time()
             result = method(*args, **kw)
             te = time.time()
-            with open('testresults.txt', "a") as myfile:
+            with open(os.getcwd() + '/testresults.txt', "a") as myfile:
                 myfile.write(str(te - ts) + "  " + method.__name__ + '\n')
             return result
 
