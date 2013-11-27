@@ -1,2 +1,4 @@
 Stress
 ======
+
+python run.py
