@@ -14,10 +14,11 @@ keystone_url = config.get('keystone', 'url')
 numb = config.get('users', 'numb')
 numb = numb.split()
 filename = os.getcwd() + '/testresults.txt'
-if os.path.isfile(os.getcwd() + '/myfig.png'):
-    os.remove(os.getcwd() + '/myfig.png')
+if os.path.isfile(os.getcwd() + '/get_instances_list.png'):
+    os.remove(os.getcwd() + '/get_instances_list.png')
 ki = []
 for j in numb:
+    print j + " users working"
     if os.path.isfile(filename):
         os.remove(filename)
     procs = []
@@ -37,6 +38,12 @@ for j in numb:
         for i in content:
             k += float(i.split()[0])
     ki.append(k / int(j))
-pl.plot(ki, numb)
-pl.savefig('myfig.png')
+for i in xrange(len(numb)):
+    numb[i] = int(numb[i])
+#pl.plot(numb, ki)
+pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white')
+pl.title('Get instance list action')
+pl.xlabel('Users')
+pl.ylabel('Time')
+pl.savefig('get_instances_list.png')
 os.remove(filename)
