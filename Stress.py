@@ -4,16 +4,7 @@ from cinderclient import client as cindercl
 import novaclient.v1_1.client as nvclient
 import time
 import random
-import ConfigParser
 
-"""
-config = ConfigParser.RawConfigParser()
-config.read('config.ini')
-user = config.get('keystone', 'user')
-password = config.get('keystone', 'password')
-tenant = config.get('keystone', 'tenant')
-keystone_url = config.get('keystone', 'url')
-"""
 
 class Mirantis(Process):
 
