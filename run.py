@@ -2,6 +2,7 @@ import ConfigParser
 import numpy as np
 from Stress import Mirantis
 import matplotlib.pyplot as pl
+import requests
 import os
 
 
@@ -16,6 +17,8 @@ numb = numb.split()
 filename = os.getcwd() + '/testresults.txt'
 if os.path.isfile(os.getcwd() + '/get_instances_list.png'):
     os.remove(os.getcwd() + '/get_instances_list.png')
+if os.path.isfile(os.getcwd() + '/cpuRAM.txt'):
+    os.remove(os.getcwd() + '/cpuRAM.txt')
 ki = []
 for j in numb:
     print j + " users working"
@@ -26,11 +29,15 @@ for j in numb:
         p = Mirantis(i, user, password, tenant, keystone_url)
         procs.append(p)
 
+    r = requests.get("http://127.0.0.1:7007/start")
+
     for m in procs:
         m.start()
 
     for s in procs:
         s.join()
+
+    r = requests.get("http://127.0.0.1:7007/stop")
 
     with open(filename) as f:
         content = f.readlines()
@@ -38,6 +45,11 @@ for j in numb:
         for i in content:
             k += float(i.split()[0])
     ki.append(k / int(j))
+    r = requests.get("http://127.0.0.1:7007/metrics")
+    with open(os.getcwd() + '/cpuRAM.txt', "a") as myfile:
+        myfile.write(r.text)
+        for i in r.text.split():
+            print i
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
 #pl.plot(numb, ki)

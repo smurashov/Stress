@@ -14,6 +14,8 @@ mass = []
 
 
 def start():
+    if os.path.isfile(os.getcwd() + '/metrics.txt'):
+        os.remove(os.getcwd() + '/metrics.txt')
     p = SystemLoad()
     global mass
     mass.append(p)
