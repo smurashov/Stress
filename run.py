@@ -45,14 +45,18 @@ for j in numb:
         for i in content:
             k += float(i.split()[0])
     ki.append(k / int(j))
+    mass = []
     r = requests.get("http://127.0.0.1:7007/metrics")
     with open(os.getcwd() + '/cpuRAM.txt', "a") as myfile:
         myfile.write(r.text)
-        for i in r.text.split():
-            print i
+        for x in r.text.strip('[').strip(']').strip(',').split():
+            mass.append(float(x.encode('utf-8'
+                                       '').strip('[').strip(']').strip(',')))
+        RAM = filter(lambda x: x > 100, mass)
+        CPU = filter(lambda x: x <= 100, mass)
+        print RAM, CPU
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
-#pl.plot(numb, ki)
 pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
 pl.title('Get instance list action')
 pl.xlabel('Users')
