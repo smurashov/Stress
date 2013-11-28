@@ -6,10 +6,10 @@ from multiprocessing import Process
 class SystemLoad(Process):
     def run(self):
         while True:
-            with open(os.getcwd() + '/methrics.txt', "a") as myfile:
+            with open(os.getcwd() + '/metrics.txt', "a") as myfile:
                 a = psutil.cpu_percent(interval=1, percpu=True)
-                b = psutil.virtual_memory()
-                myfile.write(str(a) + "      " + str(b))
+                b = psutil.virtual_memory().used / 1024
+                myfile.write(str(a) + "      " + str(b) + "\n")
 mass = []
 
 

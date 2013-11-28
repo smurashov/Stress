@@ -1,6 +1,7 @@
 import psutil
 import Collector
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, send_from_directory
 
 app = Flask(__name__)
 
@@ -13,6 +14,12 @@ def start_monitor():
 def stop_monitor():
     Collector.stop()
     return jsonify({'status': 'success'})
+
+@app.route('/metrics', methods=['GET'])
+def get_metrics():
+    file_name = 'metrics.txt'
+    path = os.getcwd()
+    return send_from_directory(path, file_name)
 
 
 if __name__ == '__main__':
