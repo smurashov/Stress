@@ -19,7 +19,10 @@ if os.path.isfile(os.getcwd() + '/get_instances_list.png'):
     os.remove(os.getcwd() + '/get_instances_list.png')
 if os.path.isfile(os.getcwd() + '/cpuRAM.txt'):
     os.remove(os.getcwd() + '/cpuRAM.txt')
+if os.path.isfile(os.getcwd() + '/RAM_usage.png'):
+    os.remove(os.getcwd() + '/RAM_usage.png')
 ki = []
+RAM = []
 for j in numb:
     print j + " users working"
     if os.path.isfile(filename):
@@ -52,9 +55,12 @@ for j in numb:
         for x in r.text.strip('[').strip(']').strip(',').split():
             mass.append(float(x.encode('utf-8'
                                        '').strip('[').strip(']').strip(',')))
-        RAM = filter(lambda x: x > 100, mass)
+        RAM.append(sum(filter(lambda x: x > 100,
+                              mass)) / len(filter(lambda x: x > 100, mass)))
         CPU = filter(lambda x: x <= 100, mass)
-        print RAM, CPU
+        CPU_numb = len(CPU) / len((filter(lambda x: x > 100, mass)))
+        print CPU
+        d = [[] for x in xrange(CPU_numb)]
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
 pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
@@ -62,4 +68,9 @@ pl.title('Get instance list action')
 pl.xlabel('Users')
 pl.ylabel('Time')
 pl.savefig('get_instances_list.png')
+pl.bar(numb, RAM, facecolor='#9999ff', edgecolor='white', width=0.5)
+pl.title('RAM usage graph')
+pl.xlabel('Users')
+pl.ylabel('RAM_usage')
+pl.savefig('RAM_usage.png')
 os.remove(filename)
