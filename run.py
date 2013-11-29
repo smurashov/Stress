@@ -1,7 +1,7 @@
 import ConfigParser
 import numpy as np
 from Stress import Mirantis
-import matplotlib.pyplot as pl
+from utils import helptools
 import requests
 import os
 
@@ -70,26 +70,14 @@ for j in numb:
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
 for i in xrange(len(CPUs)):
-    print CPUs[i]
-    pl.bar(numb, CPUs[i], facecolor='#9999ff', edgecolor='white', width=0.5)
-    pl.title('CPU' + str(i+1) + 'usage graph')
-    pl.xlabel('Users')
-    pl.ylabel('CPU_usage%')
-    pl.xticks(numb)
-    pl.savefig('images/' + 'CPU' + str(i+1) + '_usage.png')
-    pl.close()
-pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
-pl.title('Get instance list action')
-pl.xlabel('Users')
-pl.ylabel('Time')
-pl.xticks(numb)
-pl.savefig('images/get_instances_list.png')
-pl.close()
-pl.bar(numb, RAM, facecolor='#9999ff', edgecolor='white', width=0.5)
-pl.title('RAM usage graph')
-pl.xlabel('Users')
-pl.ylabel('RAM_usage')
-pl.xticks(numb)
-pl.savefig('images/RAM_usage.png')
-pl.close()
+    helptools.draw(numb, CPUs[i], title='CPU' + str(i+1) + 'usage graph',
+                   xlab='Users', ylab='CPU_usage%',
+                   filename='CPU' + str(i+1) + '_usage.png')
+helptools.draw(numb, ki, title='Get instance list action',
+               xlab='Users', ylab='Time(seconds)',
+               filename='get_instances_list.png')
+helptools.draw(numb, RAM, title='RAM usage graph',
+               xlab='Users', ylab='RAM_usage',
+               filename='RAM_usage.png')
+
 os.remove(filename)
