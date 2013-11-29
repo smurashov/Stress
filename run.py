@@ -50,17 +50,26 @@ for j in numb:
     ki.append(k / int(j))
     mass = []
     r = requests.get("http://127.0.0.1:7007/metrics")
-    with open(os.getcwd() + '/cpuRAM.txt', "a") as myfile:
-        myfile.write(r.text)
-        for x in r.text.strip('[').strip(']').strip(',').split():
-            mass.append(float(x.encode('utf-8'
-                                       '').strip('[').strip(']').strip(',')))
-        RAM.append(sum(filter(lambda x: x > 100,
-                              mass)) / len(filter(lambda x: x > 100, mass)))
-        CPU = filter(lambda x: x <= 100, mass)
-        CPU_numb = len(CPU) / len((filter(lambda x: x > 100, mass)))
-        print CPU
-        d = [[] for x in xrange(CPU_numb)]
+    for x in r.text.strip('[').strip(']').strip(',').split():
+        mass.append(float(x.encode('utf-8'
+                                   '').strip('[').strip(']').strip(',')))
+    RAM.append(sum(filter(lambda x: x > 100,
+                          mass)) / len(filter(lambda x: x > 100, mass)))
+    CPU = filter(lambda x: x <= 100, mass)
+    CPU_numb = len(CPU) / len((filter(lambda x: x > 100, mass)))
+    print CPU
+    d = [[] for x in xrange(CPU_numb)]
+    for z in xrange(len(CPU)):
+        x = z
+        if z > (len(d) - 1):
+            x = z - CPU_numb
+        print d[x]
+        if len(d[x]) != 0:
+            d[x].append((CPU[z] + d[x].pop(0))/2)
+        else:
+            d[x].append(CPU[z])
+    print d
+
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
 pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
