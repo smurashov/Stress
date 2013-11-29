@@ -15,14 +15,13 @@ keystone_url = config.get('keystone', 'url')
 numb = config.get('users', 'numb')
 numb = numb.split()
 filename = os.getcwd() + '/testresults.txt'
-if os.path.isfile(os.getcwd() + '/get_instances_list.png'):
-    os.remove(os.getcwd() + '/get_instances_list.png')
-if os.path.isfile(os.getcwd() + '/cpuRAM.txt'):
-    os.remove(os.getcwd() + '/cpuRAM.txt')
-if os.path.isfile(os.getcwd() + '/RAM_usage.png'):
-    os.remove(os.getcwd() + '/RAM_usage.png')
+if os.path.isdir(os.getcwd() + '/images'):
+    for i in os.listdir(os.getcwd() + '/images'):
+        os.remove(os.getcwd() + '/images/' + i)
+    os.rmdir(os.getcwd() + '/images')
 ki = []
 RAM = []
+os.mkdir('images')
 for j in numb:
     print j + " users working"
     if os.path.isfile(filename):
@@ -57,29 +56,40 @@ for j in numb:
                           mass)) / len(filter(lambda x: x > 100, mass)))
     CPU = filter(lambda x: x <= 100, mass)
     CPU_numb = len(CPU) / len((filter(lambda x: x > 100, mass)))
-    print CPU
     d = [[] for x in xrange(CPU_numb)]
+    flag = 0
     for z in xrange(len(CPU)):
-        x = z
-        if z > (len(d) - 1):
-            x = z - CPU_numb
-        print d[x]
-        if len(d[x]) != 0:
-            d[x].append((CPU[z] + d[x].pop(0))/2)
-        else:
-            d[x].append(CPU[z])
-    print d
-
+        x = z - flag * CPU_numb
+        d[x].append(CPU[z])
+        if (x + 1) % len(d) == 0:
+            flag += 1
+    if j == numb[0]:
+        CPUs = [[] for x in xrange(CPU_numb)]
+    for z in xrange(len(d)):
+        CPUs[z].append(d[z][0])
 for i in xrange(len(numb)):
     numb[i] = int(numb[i])
+for i in xrange(len(CPUs)):
+    print CPUs[i]
+    pl.bar(numb, CPUs[i], facecolor='#9999ff', edgecolor='white', width=0.5)
+    pl.title('CPU' + str(i+1) + 'usage graph')
+    pl.xlabel('Users')
+    pl.ylabel('CPU_usage%')
+    pl.xticks(numb)
+    pl.savefig('images/' + 'CPU' + str(i+1) + '_usage.png')
+    pl.close()
 pl.bar(numb, ki, facecolor='#9999ff', edgecolor='white', width=0.5)
 pl.title('Get instance list action')
 pl.xlabel('Users')
 pl.ylabel('Time')
-pl.savefig('get_instances_list.png')
+pl.xticks(numb)
+pl.savefig('images/get_instances_list.png')
+pl.close()
 pl.bar(numb, RAM, facecolor='#9999ff', edgecolor='white', width=0.5)
 pl.title('RAM usage graph')
 pl.xlabel('Users')
 pl.ylabel('RAM_usage')
-pl.savefig('RAM_usage.png')
+pl.xticks(numb)
+pl.savefig('images/RAM_usage.png')
+pl.close()
 os.remove(filename)
