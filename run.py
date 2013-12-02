@@ -4,9 +4,7 @@ from Stress import Mirantis
 from utils import helptools
 import requests
 import os
-import clients
-from clients.nova import nova
-from clients.metadatarepo import MuranoMetaRepo
+
 
 urls = {}
 config = ConfigParser.RawConfigParser()
