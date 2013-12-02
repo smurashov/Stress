@@ -18,8 +18,8 @@ class Mirantis(Process):
                                     service_type="compute")
         self.cinder = cindercl.Client('1', user, password,
                                       tenant, keystone_url)
-        glance_endpoint = keystone.service_catalog.url_for(service_type='image',
-                                                   endpoint_type='publicURL')
+        glance_endpoint = keystone.service_catalog.url_for(
+            service_type='image', endpoint_type='publicURL')
         self.glance = glclient.Client(glance_endpoint,
                                       token=keystone.auth_token)
         self.numb = numb
