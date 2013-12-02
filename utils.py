@@ -1,5 +1,19 @@
 import matplotlib.pyplot as pl
+import time
+import os
 
+
+def timecheck(method):
+
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        with open(os.getcwd() + '/testresults.txt', "a") as myfile:
+            myfile.write(str(te - ts) + "  " + method.__name__ + '\n')
+        return result
+
+    return timed
 
 class helptools():
 
