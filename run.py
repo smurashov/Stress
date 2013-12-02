@@ -52,13 +52,10 @@ for j in numb:
         os.remove(filename)
     mass = []
     r = requests.get("http://127.0.0.1:7007/metrics")
-    for x in r.text.strip('[').strip(']').strip(',').split():
-        mass.append(float(x.encode('utf-8'
-                                   '').strip('[').strip(']').strip(',')))
-    RAM.append(sum(filter(lambda x: x > 100,
-                          mass)) / len(filter(lambda x: x > 100, mass)))
-    CPU = filter(lambda x: x <= 100, mass)
-    CPU_numb = len(CPU) / len((filter(lambda x: x > 100, mass)))
+    mass = helptools.pars(r)
+    RAM.append(helptools.RAM_average(mass))
+    CPU = helptools.CPU_data(mass)
+    CPU_numb = helptools.CPU_numb(CPU, mass)
     d = [[] for x in xrange(CPU_numb)]
     flag = 0
     for z in xrange(len(CPU)):
