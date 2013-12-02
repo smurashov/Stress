@@ -10,7 +10,7 @@ import os
 
 class Mirantis(Process):
 
-    def __init__(self, numb, user, password, tenant, keystone_url):
+    def __init__(self, numb, duration, user, password, tenant, keystone_url):
         super(Mirantis, self).__init__()
         keystone = ksclient.Client(username=user, password=password,
                                    tenant_name=tenant, auth_url=keystone_url)
@@ -24,6 +24,7 @@ class Mirantis(Process):
                                       token=keystone.auth_token)
         self.numb = numb
         self.points = []
+        self.duration = float(duration)
 
     def timecheck(method):
 
@@ -77,11 +78,16 @@ class Mirantis(Process):
         return self.glance.images.list()
 
     def run(self):
-        k = random.randint(51, 100)
-        if k < 50:
-            instance = self.create_instance()
-            self.delete_instance(instance)
-        elif k > 101:
-            self.get_images_list()
-        elif k < 100:
-            self.get_servers_list()
+
+        te = time.time()
+        ts = time.time()
+        while (ts - te) < self.duration:
+            k = random.randint(51, 100)
+            ts = time.time()
+            if k < 50:
+                instance = self.create_instance()
+                self.delete_instance(instance)
+            elif k > 101:
+                self.get_images_list()
+            elif k < 100:
+                self.get_servers_list()
