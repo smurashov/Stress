@@ -14,6 +14,7 @@ tenant = config.get('keystone', 'tenant')
 keystone_url = config.get('keystone', 'url')
 numb = config.get('users', 'numb')
 numb = numb.split()
+duration = config.get('users', 'duration')
 filename = os.getcwd() + '/testresults.txt'
 if os.path.isdir(os.getcwd() + '/images'):
     for i in os.listdir(os.getcwd() + '/images'):
@@ -28,7 +29,7 @@ for j in numb:
         os.remove(filename)
     procs = []
     for i in xrange(int(j)):
-        p = Mirantis(i, user, password, tenant, keystone_url)
+        p = Mirantis(i, duration, user, password, tenant, keystone_url)
         procs.append(p)
 
     r = requests.get("http://127.0.0.1:7007/start")
@@ -46,7 +47,9 @@ for j in numb:
         k = 0
         for i in content:
             k += float(i.split()[0])
-    ki.append(k / int(j))
+    ki.append(k / len(content))
+    if os.path.isfile(filename):
+        os.remove(filename)
     mass = []
     r = requests.get("http://127.0.0.1:7007/metrics")
     for x in r.text.strip('[').strip(']').strip(',').split():
@@ -79,5 +82,5 @@ helptools.draw(numb, ki, title='Get instance list action',
 helptools.draw(numb, RAM, title='RAM usage graph',
                xlab='Users', ylab='RAM_usage',
                filename='RAM_usage.png')
-
-os.remove(filename)
+if os.path.isfile(filename):
+    os.remove(filename)
