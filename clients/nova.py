@@ -5,8 +5,10 @@ import random
 
 class nova():
 
-    def __init__(self, user, password, tenant, keystone_url):
-        self.nova = nvclient.Client(user, password, tenant, keystone_url,
+    "Nova"
+
+    def __init__(self, user, password, tenant, urls):
+        self.nova = nvclient.Client(user, password, tenant, urls['keystone'],
                                     service_type="compute")
 
     @timecheck

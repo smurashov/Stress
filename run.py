@@ -5,13 +5,18 @@ from utils import helptools
 import requests
 import os
 
-
+urls = {}
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
+service = config.get('users', 'testing_service')
+agent = config.get('agent', 'agent_url')
 user = config.get('keystone', 'user')
 password = config.get('keystone', 'password')
 tenant = config.get('keystone', 'tenant')
 keystone_url = config.get('keystone', 'url')
+urls.setdefault('keystone', keystone_url)
+metadata_url = config.get('murano', 'metadata_url')
+urls.setdefault('metadata_url', metadata_url)
 numb = config.get('users', 'numb')
 numb = numb.split()
 duration = config.get('users', 'duration')
@@ -24,23 +29,25 @@ ki = []
 RAM = []
 os.mkdir('images')
 for j in numb:
-    print j + " users working"
+    print j + " users starting"
     if os.path.isfile(filename):
         os.remove(filename)
     procs = []
     for i in xrange(int(j)):
-        p = Mirantis(i, duration, user, password, tenant, keystone_url)
+        p = Mirantis(i, duration, user, password, tenant, urls, service)
         procs.append(p)
 
-    r = requests.get("http://127.0.0.1:7007/start")
+    r = requests.get("%s/start" % agent)
 
     for m in procs:
         m.start()
 
+    print j + " working"
+
     for s in procs:
         s.join()
 
-    r = requests.get("http://127.0.0.1:7007/stop")
+    r = requests.get("%s/stop" % agent)
 
     with open(filename) as f:
         content = f.readlines()
@@ -51,9 +58,9 @@ for j in numb:
     if os.path.isfile(filename):
         os.remove(filename)
     mass = []
-    r = requests.get("http://127.0.0.1:7007/metrics")
+    r = requests.get("%s/metrics" % agent)
     mass = helptools.pars(r)
-    RAM.append(helptools.RAM_average(mass))
+    RAM.append(helptools.RAM_average(mass) / 100000)
     CPU = helptools.CPU_data(mass)
     CPU_numb = helptools.CPU_numb(CPU, mass)
     d = [[] for x in xrange(CPU_numb)]
