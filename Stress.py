@@ -1,10 +1,16 @@
-from multiprocessing import Process
+import threading
 import time
-import sys
-import inspect
+#import sys
+#import inspect
+from gevent import monkey
+
+monkey.patch_all(socket=True, dns=True, time=True, select=True,
+                 thread=True, os=True, ssl=True, httplib=False,
+                 subprocess=False, sys=False, aggressive=True,
+                 Event=False)
 
 
-class Mirantis(Process):
+class Mirantis(threading.Thread):
 
     def __init__(self, numb, duration, client):
         super(Mirantis, self).__init__()
