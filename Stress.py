@@ -13,7 +13,7 @@ monkey.patch_all(socket=True, dns=True, time=True, select=True,
 class Mirantis(threading.Thread):
 
     def __init__(self, numb, duration, client):
-        super(Mirantis, self).__init__()
+        threading.Thread.__init__(self)
         """
         for name, obj in inspect.getmembers(sys.modules[clients.__name__]):
             if inspect.ismodule(obj):
