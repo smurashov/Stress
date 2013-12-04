@@ -1,6 +1,16 @@
 from keystone import keystone
 import requests
 import random
+import os
+import sys
+possible_topdir = os.path.normpath(os.path.join(os.path.abspath(__file__),
+                                                os.pardir,
+                                                os.pardir,
+                                                os.pardir))
+if os.path.exists(os.path.join(possible_topdir,
+                               'Stress',
+                               '__init__.py')):
+    sys.path.insert(0, possible_topdir)
 from utils import timecheck
 
 class MuranoMetaRepo():

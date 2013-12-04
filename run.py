@@ -4,7 +4,7 @@ from Stress import Mirantis
 from utils import helptools
 import requests
 import os
-
+import clients.metadatarepo as meta
 
 urls = {}
 config = ConfigParser.RawConfigParser()
@@ -28,6 +28,7 @@ if os.path.isdir(os.getcwd() + '/images'):
     os.rmdir(os.getcwd() + '/images')
 ki = []
 RAM = []
+client = meta.MuranoMetaRepo(user, password, tenant, urls)
 os.mkdir('images')
 for j in numb:
     print j + " users starting"
@@ -35,7 +36,7 @@ for j in numb:
         os.remove(filename)
     procs = []
     for i in xrange(int(j)):
-        p = Mirantis(i, duration, user, password, tenant, urls, service)
+        p = Mirantis(i, duration, client)
         procs.append(p)
 
     r = requests.get("%s/start" % agent)
